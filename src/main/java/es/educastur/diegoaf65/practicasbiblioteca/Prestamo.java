@@ -11,6 +11,10 @@ package es.educastur.diegoaf65.practicasbiblioteca;
 
 import java.time.LocalDate;
 
+/*
+Este es un comentario de Documentación JavaDoc
+*/
+
 public class Prestamo {
     private Libro libroPrest;
     private Usuario usuarioPrest;

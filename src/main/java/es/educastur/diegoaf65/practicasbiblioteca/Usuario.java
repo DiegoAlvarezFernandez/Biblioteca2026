@@ -8,6 +8,11 @@ package es.educastur.diegoaf65.practicasbiblioteca;
  *
  * @author 1dawd21
  */
+
+/*
+Este es un comentario de Documentación JavaDoc
+*/
+
 public class Usuario {
     private String dni;
     private String nombre;

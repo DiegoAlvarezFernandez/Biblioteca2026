@@ -8,6 +8,11 @@ package es.educastur.diegoaf65.practicasbiblioteca;
  *
  * @author 1dawd21
  */
+
+/*
+Este es un comentario de Documentación JavaDoc
+*/
+
 public class LibroNoExiste extends Exception {
     public LibroNoExiste(String cadena) {
         super(cadena); // Llama al constructor de Exceptions

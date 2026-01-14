@@ -11,6 +11,11 @@ import java.util.Scanner;
  *
  * @author 1dawd21
  */
+
+/*
+Este es un comentario de Documentación JavaDoc
+*/
+
 public class PracticasBiblioteca {
 
     private static ArrayList <Libro> libros = new ArrayList();
