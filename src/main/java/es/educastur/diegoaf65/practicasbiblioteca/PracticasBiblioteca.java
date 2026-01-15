@@ -26,7 +26,7 @@ public class PracticasBiblioteca {
     
     public static void main(String[] args) {
         cargaDatos();
-        menuOpciones();
+        //menuOpciones();
         //cargaLibros();
         //cargaUsuarios();
         //cargaPrestamos();
@@ -34,7 +34,7 @@ public class PracticasBiblioteca {
         //menuUsuarios();
         //menuPrestamos();
         //menuListados();
-        //listaDatos();
+        menuStreams();
     }
     
     public static void menuOpciones(){
@@ -383,8 +383,8 @@ public class PracticasBiblioteca {
         while(opcion != 4);
     }
     
-    public static void listarLibros() {
-        for (Libro l : libros) {
+    public static void listarLibros(){
+        for (Libro l : libros){
             System.out.println("ISBN:\t\t" + l.getIsbn());
             System.out.println("Titulo:\t\t" + l.getTitulo());
             System.out.println("Autor:\t\t" + l.getAutor());
@@ -394,8 +394,8 @@ public class PracticasBiblioteca {
         }
     }
 
-    public static void listarUsuarios() {
-        for (Usuario u : usuarios) {
+    public static void listarUsuarios(){
+        for (Usuario u : usuarios){
             System.out.println("DNI:\t\t" + u.getDni());
             System.out.println("Nombre:\t\t" + u.getNombre());
             System.out.println("Email:\t\t" + u.getEmail());
@@ -404,8 +404,8 @@ public class PracticasBiblioteca {
         }
     }
 
-    public static void listarPrestamos() {
-        for (Prestamo p : prestamos) {
+    public static void listarPrestamos(){
+        for (Prestamo p : prestamos){
             System.out.println("Usuario:\t\t" + p.getUsuarioPrest().getDni() + " - " + p.getUsuarioPrest().getNombre() + " - " + p.getUsuarioPrest().getEmail() + " - " + p.getUsuarioPrest().getTelefono());
             System.out.println("Libro:\t\t\t" + p.getLibroPrest().getIsbn() + " - " + p.getLibroPrest().getTitulo() + " - " + p.getLibroPrest().getAutor() + " - " + p.getLibroPrest().getGenero() + " - " + p.getLibroPrest().getEjemplares());
             System.out.println("Fecha de prestamo:\t" + p.getFechaPrest());
@@ -414,22 +414,63 @@ public class PracticasBiblioteca {
         }
     }
     
-    public static int stockLibro(String isbn) throws LibroNoExiste, LibroNoDisponible {
-        int libroPos = buscaLibros(isbn);
-        if (libroPos == -1) {
-            throw new LibroNoExiste("No existe en esta biblioteca la referencia: " + libros.get(libroPos).getIsbn());
-        } else if (libros.get(libroPos).getEjemplares() == 0) {
-            String cadena = "No hay unidades del libro " + libros.get(libroPos).getTitulo()
-                    + "\nDisponibles actualmente: "
-                    + "\nFechas de devolucion previstas: ";
-            for (Prestamo p : prestamos) {
-                if (p.getLibroPrest().getIsbn().equals(isbn)) {
-                    cadena = cadena + "\n * " + p.getFechaDev();
+    public static void menuStreams(){
+        int opcion;
+        do{
+            System.out.println("\t MENU DE OPCIONES");
+            System.out.println("\t --> 1 - LISTADOS GENERALES");
+            System.out.println("\t --> 2 - LISTADOS SELECTIVOS");
+            System.out.println("\t --> 3 - ");
+            System.out.println("\t --> 4 - SALIR");
+            
+            opcion = sc.nextInt();
+            
+            switch (opcion){
+                case 1:{
+                    listadosGenerales();
+                    break;
+                }
+                case 2:{
+                    listadosSelectivos();
+                    break;
+                }
+                case 3:{
+                    listarPrestamos();
+                    break;
                 }
             }
-            throw new LibroNoDisponible(cadena);
         }
-        return libroPos;
+        while(opcion != 4);
+    }
+
+    public static void listadosGenerales(){
+        System.out.println("Lista de libros:");
+        libros.stream().forEach(l->System.out.println(l));
+        System.out.println("Lista de usuarios:");
+        usuarios.stream().forEach(u->System.out.println(u));
+        System.out.println("Lista de prestamos:");
+        prestamos.stream().forEach(p->System.out.println(p));
+    }
+    
+    public static void listadosSelectivos(){
+        System.out.println("Lista de libros de la seccion de aventuras y creados por jrr tolkien:");
+        libros.stream().filter(l->l.getGenero().equalsIgnoreCase("aventuras")
+        && l.getAutor().equalsIgnoreCase("jrr tolkien"))
+        .forEach(l->System.out.println(l));
+        System.out.println("Lista de libros de la seccion de aventuras o creados por jrr tolkien:");
+        libros.stream().filter(l->l.getGenero().equalsIgnoreCase("aventuras")
+        || l.getAutor().equalsIgnoreCase("jrr tolkien"))
+        .forEach(l->System.out.println(l));
+        System.out.println("Lista de prestamos fuera de plazo:");
+        prestamos.stream().filter(p->p.getFechaDev().isBefore(LocalDate.now()))
+        .forEach(p->System.out.println(p));
+        System.out.println("Teclea el nombre de la persona de la que quieres ver su lista de prestamos activos y no activos:");
+        String nombre = sc.next();
+        prestamos.stream().filter(p->p.getUsuarioPrest().getNombre().equalsIgnoreCase(nombre))
+        .forEach(p->System.out.println(p));
+        System.out.println("Lista de prestamos activos y de la seccion de aventuras");
+        prestamos.stream().filter(p->p.getLibroPrest().getGenero().equalsIgnoreCase("aventuras"))
+        .forEach(p->System.out.println(p));
     }
     
     public static void cargaDatos(){
@@ -460,7 +501,7 @@ public class PracticasBiblioteca {
     }
     
     public static void cargaPrestamos(){
-        LocalDate hoy= LocalDate.now();
+        LocalDate hoy = LocalDate.now();
         prestamos.add(new Prestamo(libros.get(0),usuarios.get(0), hoy.minusDays(20),hoy.minusDays(5)));
         prestamos.add(new Prestamo(libros.get(0),usuarios.get(0), hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(5),usuarios.get(0), hoy,hoy.plusDays(15)));
